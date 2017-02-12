@@ -1,0 +1,67 @@
+TITLE ASK1
+KODIKAS SEGMENT
+    ASSUME CS:KODIKAS, DS:DEDOMENA
+    ARXI:   
+        MOV AX,DEDOMENA	
+	    MOV DS,AX
+	    
+	    MOV SI,0	
+        LEA DX,MINIMA
+        MOV AH,9
+        INT 21H
+        
+ENT:    mov ah,01h
+        int 21h
+        
+        MOV BL, AL
+        
+        CMP BL,13
+        JE TELOS
+        
+        CMP BL,32
+        JE SAVE
+        
+        CMP BL,'.'
+        JE SAVE
+        
+        CMP BL,'A'
+        JB ENT
+        
+        CMP BL,'Z'
+        JBE SAVE
+        
+        CMP BL,'a'
+        JB ENT
+        
+        CMP BL,'z'
+        JA ENT
+        
+SAVE:   
+        MOV BUFFER[SI], BL
+        INC SI      
+        CMP SI,40
+        JB ENT
+
+TELOS:  
+        MOV        
+        CMP BL,'a'
+        JB KEF
+        
+        CMP BL,'A'
+        JB ASIS
+        
+ASIS:   
+        
+        MOV AH,4CH
+        INT 21H
+	
+KODIKAS ENDS
+
+DEDOMENA SEGMENT
+    BUFFER   DB 40 DUP(0)  
+    MINIMA DB "Eisigage string: $"
+    MINIMA2 DB 10,13"String meta tin metatropi: $"
+DEDOMENA ENDS
+
+
+    END ARXI 

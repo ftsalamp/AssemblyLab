@@ -1,0 +1,121 @@
+TITLE ASK2
+ASSUME CS:KODIKAS,DS:DATA
+KODIKAS SEGMENT
+			           
+ARXI:	MOV AX,DATA
+     	MOV DS,AX
+        
+        MOV SI,0  
+        
+        
+        
+        LEA DX,PROTROPI  
+        MOV AH,9 	    
+        INT 21H 	    
+   
+v1:     MOV AH,01h      
+        INT 21h 
+        
+        CMP AL,'#'
+        JE EMF
+        
+        CMP AL,'0'
+        JB v1
+        
+        CMP AL,'9'
+        JBE EIS
+
+        CMP AL,'a'
+        JB v1
+
+        CMP AL,'z'
+        JA v1
+
+
+EIS:    MOV BUFFER[SI],AL
+        
+        INC SI
+        CMP SI,25
+        JB v1
+        
+             
+     
+EMF:    
+        CMP SI,0
+        JE NO
+        
+        
+        
+        LEA DX,MES
+        MOV AH,9
+        INT 21H
+        
+        MOV CX,SI
+        MOV BX,SI     
+     
+CONTROL1:
+        CMP BUFFER[SI],'a'
+        JB DECR1
+        
+        MOV DL,BUFFER[SI]
+        MOV AH,2
+        INT 21H
+
+DECR1:   DEC SI  
+        LOOP CONTROL1
+        CMP BUFFER[SI],'a';xreaizetai giati to loop ginetai oso CX>0 otan ginei 0 feugei kai xanw to prwto stoixeio
+        JB C2  
+        MOV DL,BUFFER[SI]
+        MOV AH,2
+        INT 21H  
+          
+          
+        
+C2:     MOV SI,BX
+        MOV CX,SI 
+        
+        LEA DX,MESA
+        MOV AH,9
+        INT 21H
+        
+                
+CONTROL2:
+        CMP BUFFER[SI],'9'        
+        JA DECR2
+        
+        MOV DL,BUFFER[SI]
+        MOV AH,2
+        INT 21H
+        
+DECR2:  DEC SI
+        LOOP CONTROL2 
+         CMP BUFFER[SI],'9';xreaizetai giati to loop ginetai oso CX>0 otan ginei 0 feugei kai xanw to prwto stoixeio
+        JA EXIT  
+        MOV DL,BUFFER[SI]
+        MOV AH,2
+        INT 21H
+        
+        
+EXIT:
+        MOV AH,4CH
+        INT 21H     
+     
+NO:
+        LEA DX,NOINPUT
+        MOV AH,9
+        INT 21H
+        JMP EXIT     
+           
+KODIKAS ENDS
+
+DATA SEGMENT   
+    BUFFER DB 25 DUP(0) ; Dilosi enos pinaka me onoma Buffer 20 theseon typou Byte
+    PROTROPI DB 'Eisagete keimeno:  $';
+	MES DB 10,13,10,13,'TELIKH EMFANISH->: $' ; To minima pou tha emfanistei
+	MESK DB 10,13,10,13,'KEFALAIA->: $' ; To minima pou tha emfanistei
+	MESA DB 10,13,10,13,'Aritmoi->: $' ; To minima pou tha emfanistei
+	NOINPUT DB 10,13,'Den eisagate kanena charaktira. Telos programmatos$';		
+   
+DATA ENDS 
+
+END ARXI

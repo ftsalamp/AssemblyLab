@@ -1,0 +1,210 @@
+TITLE ASK2
+ASSUME CS:KODIKAS,DS:DATA
+KODIKAS SEGMENT
+			           
+ARXI:	MOV AX,DATA
+     	MOV DS,AX
+        
+        MOV SI,0       
+    
+        LEA DX,PROTROPI  
+        MOV AH,9 	    
+        INT 21H 	
+        
+E1:     MOV AH,1H
+        INT 21H        
+        
+        CMP AL,'#'
+        JE E2
+        
+        CMP AL,'@'
+        JE EIS
+        
+        CMP AL,'.'
+        JE EIS
+        
+        CMP AL,'A'
+        JB E1
+        
+        CMP AL,'Z'
+        JBE EIS
+        
+        CMP AL,'a'
+        JB E1
+        
+        CMP AL,'z'
+        JA E1     
+        
+EIS:    MOV BUFFER[SI],AL
+        INC SI
+        CMP SI,40
+        JB E1
+        
+E2:     CMP SI,0
+        JE NO
+        
+        MOV CX,SI
+        MOV BX,SI
+      
+        DEC SI;prepei na to kane decrease apo twra giati otan exei pathsei autos th # to SI exei aukshthei kata ena gia na deixnoume sthn epomenh kenh thesh
+        ;efoson pathse # termatizetai h eisagwgh opote to BUFFER[SI] einai keno.to kanw decrease kata ena gia na deiksei sto teluetaio gramma
+        CMP BUFFER[SI],'r'
+        JE  C1
+        
+        LEA DX,WRONGMES 
+        MOV AH,9
+        INT 21H 
+        JMP EXIT
+        
+C1:     DEC SI
+        CMP BUFFER[SI],'g'
+        JE  C2
+        
+        LEA DX,WRONGMES 
+        MOV AH,9
+        INT 21H
+        JMP EXIT 
+        
+C2:     DEC SI
+        CMP BUFFER[SI],'.'
+        JE  C3
+        
+        LEA DX,WRONGMES 
+        MOV AH,9
+        INT 21H
+        JMP EXIT
+        
+C3:     DEC SI
+        CMP BUFFER[SI],'e'
+        JE  C4
+        
+        LEA DX,WRONGMES 
+        MOV AH,9
+        INT 21H
+        JMP EXIT      
+        
+C4:     DEC SI
+        CMP BUFFER[SI],'h'
+        JE  C5
+        
+        LEA DX,WRONGMES 
+        MOV AH,9
+        INT 21H
+        JMP EXIT 
+        
+C5:     DEC SI
+        CMP BUFFER[SI],'t'
+        JE C6  
+          
+        LEA DX,WRONGMES 
+        MOV AH,9
+        INT 21H
+        JMP EXIT
+        
+C6:     
+        DEC SI
+        CMP BUFFER[SI],'i'
+        JE C7  
+          
+        LEA DX,WRONGMES 
+        MOV AH,9
+        INT 21H
+        JMP EXIT
+        
+C7:     
+        DEC SI
+        CMP BUFFER[SI],'e'
+        JE C8  
+          
+        LEA DX,WRONGMES 
+        MOV AH,9
+        INT 21H
+        JMP EXIT
+        
+C8:     
+        DEC SI
+        CMP BUFFER[SI],'t'
+        JE C9  
+          
+        LEA DX,WRONGMES 
+        MOV AH,9
+        INT 21H
+        JMP EXIT
+        
+C9:     DEC SI
+        CMP BUFFER[SI],'.'
+        JE C10
+        
+          LEA DX,WRONGMES 
+        MOV AH,9
+        INT 21H
+        JMP EXIT
+        
+C10:     DEC SI
+        CMP BUFFER[SI],'t'
+        JE C11
+        
+          LEA DX,WRONGMES 
+        MOV AH,9
+        INT 21H
+        JMP EXIT
+        
+C11:     DEC SI
+        CMP BUFFER[SI],'i'
+        JE C12
+        
+          LEA DX,WRONGMES 
+        MOV AH,9
+        INT 21H
+        JMP EXIT
+        
+C12:     DEC SI
+        CMP BUFFER[SI],'@'
+        JE EMFANISI
+        
+          LEA DX,WRONGMES 
+        MOV AH,9
+        INT 21H
+        JMP EXIT
+                             
+      
+EMFANISI:
+         LEA DX,MES
+         MOV AH,9
+         INT 21H
+         
+         MOV SI,0
+EM1:      MOV DL,BUFFER[SI]
+         MOV AH,2       
+         INT 21H
+         INC SI
+         CMP BUFFER[SI],'@'
+         JE EXIT
+         LOOP EM1  
+        
+        
+
+
+EXIT:   
+        MOV AH,4CH
+        INT 21H         
+        
+NO:     LEA DX,NOINPUT
+        MOV AH,9
+        INT 21H
+        JMP EXIT
+        
+
+                        
+        KODIKAS ENDS
+
+DATA SEGMENT   
+    BUFFER DB 40 DUP(0) ; Dilosi enos pinaka me onoma Buffer 20 theseon typou Byte
+    PROTROPI DB 'Eisagete keimeno:  $';
+	MES DB 10,13,10,13,'KEIMENO PRIN TO PAPAKI: $' ; To minima pou tha emfanistei
+	NOINPUT DB 10,13,'Den eisagate kanena charaktira. Telos programmatos$';	
+	NO@ DB 10,13,"Den eisagate papaki$"	
+    WRONGMES  DB 10,13,"EXEI GINEI LATHOS EISAGWSH MAIL$"	
+DATA ENDS 
+
+END ARXI	

@@ -1,0 +1,148 @@
+TITLE ASK2
+ASSUME CS:KODIKAS,DS:DATA
+KODIKAS SEGMENT
+MAIN PROC NEAR			           
+ARXI:	MOV AX,DATA
+     	MOV DS,AX
+        
+        MOV SI,0   
+        
+        MOV BH,0        ; MHDENIZW TON BH POY TON EXW SAN METRHTH EPANALHPSEON 
+        
+        
+        
+E1:     LEA DX,PROTROPI  
+        MOV AH,9 	    
+        INT 21H 
+        
+        MOV AH,08h      
+        INT 21h 
+        
+        CMP AL,'0'
+        JE DO0
+        
+        
+ASOS:   CMP AL,'1'
+        JE DO1
+        JMP E1
+        
+        
+DO0:    MOV DL,AL	    ; METAFERO STO DL TO XARAKTIRA POY EXOYME EISAGEI
+	    MOV AH,2	    ; METAFEROYME STON AH TO 2 GIA NA MPOROYME NA EMFANISOYME TO PERIEXOMENO TOY DL
+	    INT 21H		    ; KALOYME TO LEITOYRGIKO SYSTIMA NA EMFANISEI STIN OTHONI TO PERIEXOMENO TOY DL
+        MOV BUFFER[SI], 0
+        JMP Elegxos
+        
+DO1:    MOV DL,AL	    ; METAFERO STO DL TO XARAKTIRA POY EXOYME EISAGEI
+	    MOV AH,2	    ; METAFEROYME STON AH TO 2 GIA NA MPOROYME NA EMFANISOYME TO PERIEXOMENO TOY DL
+	    INT 21H		    ; KALOYME TO LEITOYRGIKO SYSTIMA NA EMFANISEI STIN OTHONI TO PERIEXOMENO TOY DL
+        MOV BUFFER[SI], 1
+             
+Elegxos:
+        INC SI
+        INC BH		    ; AFKSANW TO METRHTH KATA ENA
+	    CMP BH,8	    ; SYGKRINW TO METRHTH ME TO 5
+	    JB E1		    ; AN DEN EXOUN SYMPLHRWTHEI 5 ARITHMOI SYNEXIZW NA EISAGW
+        
+        CALL IPOPR
+        
+        ; OI 2 EPOMENES ENTOLES TERMATIZOYN TO PROGRAMMA KAI EPISTREFOYN STO LEITOYRGIKO
+        MOV AH,4CH
+        INT 21H
+        
+MAIN ENDP
+
+IPOPR PROC NEAR	;ypoprogramma
+        MOV DL,0
+        MOV SI,0 
+E2:     
+        SHL DL, 1
+        
+        CMP BUFFER[SI],1
+        JNE E3
+        
+        INC DL
+        
+E3:     INC SI
+        CMP SI,8
+        JB E2 
+        
+        CMP DL, 32
+        JB OTHER
+                
+        
+	    MOV AH,2	    ; METAFEROYME STON AH TO 2 GIA NA MPOROYME NA EMFANISOYME TO PERIEXOMENO TOY DL
+	    INT 21H
+	    
+	    CMP DL, 48
+        JB SIMVOLO
+        
+        CMP DL, 58
+        JB ARITHMOS
+        
+        CMP DL, 65
+        JB SIMVOLO
+        
+        CMP DL, 92
+        JB KEFALAIO
+        
+        CMP DL, 97
+        JB SIMVOLO
+        
+        CMP DL, 123
+        JB MIKRO
+        
+        CMP DL, 128
+        JB SIMVOLO
+	    
+	    LEA DX,REGIONALS  
+        MOV AH,9 	    
+        INT 21H
+	    JMP END
+        
+SIMVOLO:LEA DX,SIMVOLOS  
+        MOV AH,9 	    
+        INT 21H
+	    JMP END
+	    
+ARITHMOS:LEA DX,ARITHMOSS  
+        MOV AH,9 	    
+        INT 21H
+	    JMP END
+	    
+	    
+MIKRO:	LEA DX,MIKROS  
+        MOV AH,9 	    
+        INT 21H
+	    JMP END
+	    
+KEFALAIO:LEA DX,KEFALAIOS  
+        MOV AH,9 	    
+        INT 21H
+	    JMP END	        	    
+	            
+OTHER:  LEA DX,MIEKTIPWSIMOSS  
+        MOV AH,9 	    
+        INT 21H
+        
+      
+END: 			        
+        RET
+IPOPR ENDP
+
+
+KODIKAS ENDS
+
+DATA SEGMENT  
+     
+    BUFFER DB 8 DUP(0) ; Dilosi enos pinaka me onoma Buffer 8 theseon typou Byte
+    PROTROPI DB 10,13,'Eisagete arithmo:  $'	
+    ARITHMOSS DB 10,13,'Einai arithmos$'
+    KEFALAIOS DB 10,13,'Einai kefalaio$'
+    MIKROS DB 10,13,'Einai mikro$'
+    SIMVOLOS DB 10,13,'Einai simvolo$'
+    MIEKTIPWSIMOSS DB 10,13,'Einai mi ektipwsimos$'
+    REGIONALS DB 10,13,'Einai regional$'
+DATA ENDS 
+
+END ARXI

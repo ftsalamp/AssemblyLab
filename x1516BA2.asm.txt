@@ -1,0 +1,123 @@
+TITLE ASK2
+ASSUME CS:KODIKAS,DS:DATA
+KODIKAS SEGMENT
+MAIN PROC NEAR			           
+ARXI:	MOV AX,DATA
+     	MOV DS,AX
+        
+        MOV SI,0   
+        
+        MOV BX,0        ; MHDENIZW TON BH POY TON EXW SAN METRHTH EPANALHPSEON 
+        MOV CX,0
+        
+        
+        LEA DX,PROTROPI  
+        MOV AH,9 	    
+        INT 21H 
+        
+E1:     MOV AH,08h      
+        INT 21h 
+        
+        CMP AL,'a'
+        JB E1
+        
+        
+        CMP AL,'z'
+        JA E1
+        
+        MOV LEKSI1[SI], AL       
+        MOV AH, 0
+        ADD BX, AX       
+        MOV DL, AL
+        MOV AH,2 	    
+        INT 21H 
+             
+        INC SI     
+             
+        CMP SI, 6
+        JB E1
+             
+
+E5:
+
+
+F:      LEA DX,PROTROPI  
+        MOV AH,9 	    
+        INT 21H
+        
+        MOV SI,0
+F1:     MOV AH,08h      
+        INT 21h 
+        
+        CMP AL,'a'
+        JB F1
+        
+        
+        CMP AL,'z'
+        JA F1
+        
+        MOV LEKSI2[SI], AL       
+        MOV AH, 0 
+        ADD CX, AX        
+        MOV DL, AL
+        MOV AH,2 	    
+        INT 21H
+          
+        INC SI     
+             
+        CMP SI, 6
+        JB F1
+            
+
+F5:
+        
+        CMP BX, CX
+        JB T1
+        
+        LEA DX,PROTROPI1I  
+        MOV AH,9 	    
+        INT 21H     
+        MOV SI,0
+F6:               
+        MOV DL, LEKSI1[SI]
+        MOV AH,2 	    
+        INT 21H 
+        INC SI
+        CMP SI,6
+        JB F6
+        JMP TELOS
+        
+T1:     LEA DX,PROTROPI2I  
+        MOV AH,9 	    
+        INT 21H
+        MOV SI,0
+T6:               
+        MOV DL, LEKSI2[SI]
+        MOV AH,2 	    
+        INT 21H 
+        INC SI
+        CMP SI,6
+        JB T6         
+        
+TELOS:  ; OI 2 EPOMENES ENTOLES TERMATIZOYN TO PROGRAMMA KAI EPISTREFOYN STO LEITOYRGIKO
+        MOV AH,4CH
+        INT 21H
+        
+MAIN ENDP
+
+
+
+
+KODIKAS ENDS
+
+DATA SEGMENT  
+     
+    LEKSI1 DB 6 DUP(0) ; Dilosi enos pinaka me onoma Buffer 6 theseon typou Byte
+    LEKSI2 DB 6 DUP(0) ; Dilosi enos pinaka me onoma Buffer 6 theseon typou Byte
+    BUFFER DB 2 DUP(0)
+    PROTROPI DB 10,13,'Eisagete leksi 6 xaraktirwn:  $'
+    PROTROPI2I DB 10,13,'Megaliteri einai i 2i leksi:  $' 
+    PROTROPI1I DB 10,13,'Megaliteri einai i 1i leksi:  $'	
+DATA ENDS 
+
+END ARXI

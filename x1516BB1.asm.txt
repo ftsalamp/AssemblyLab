@@ -1,0 +1,138 @@
+TITLE ASK2
+ASSUME CS:KODIKAS,DS:DATA
+KODIKAS SEGMENT
+MAIN PROC NEAR			           
+ARXI:	MOV AX,DATA
+     	MOV DS,AX
+        
+        MOV SI,0   
+        
+        MOV BH,0        ; MHDENIZW TON BH POY TON EXW SAN METRHTH EPANALHPSEON 
+        
+        
+        
+E1:     LEA DX,PROTROPI  
+        MOV AH,9 	    
+        INT 21H 
+        
+        MOV AH,08h      
+        INT 21h 
+        
+        CMP AL,'A'
+        JB LATHOS
+        
+        CMP AL,'Z'
+        JA LATHOS
+        MOV BUFFER[SI], AL
+        
+        MOV DL,AL	    ; METAFERO STO DL TO XARAKTIRA POY EXOYME EISAGEI
+	    MOV AH,2	    ; METAFEROYME STON AH TO 2 GIA NA MPOROYME NA EMFANISOYME TO PERIEXOMENO TOY DL
+	    INT 21H		    ; KALOYME TO LEITOYRGIKO SYSTIMA NA EMFANISEI STIN OTHONI TO PERIEXOMENO TOY DL
+        INC SI
+        CMP SI, 2
+        JB E1
+        
+        JMP E2
+LATHOS:
+        LEA DX,PROTROPI1  
+        MOV AH,9 	    
+        INT 21H
+        JMP E1
+                
+        
+E2:     
+        MOV DL, 10
+        MOV AH,02H	; TYPWNOUME 10
+	    INT 21H
+	    MOV DL, 13
+        MOV AH,02H	; TYPWNOUME 13
+	    INT 21H
+        
+        MOV BL, BUFFER[0]
+        MOV BH, BUFFER[1]
+        CALL IPOPR
+        
+        MOV CH,BL	; Epidi 8a xreiastoume olon ton BX metafero to periexomeno tou BL se allo kataxoriti
+        MOV BL, BH
+	    MOV BH,0	; Mizenizo ton BH kai etsi ksero oti o BX exei ayto pou eixe o BL
+	    MOV CL,4	; Bazo ston CL 4 gia na exo toses epanalipseis
+
+	    SHL BX,CL	; Metatopizo aristera ton BX tosa bit osa exei o CL
+	    MOV DL,BH	; Metaferoume ton proto hex arithmo apo ton BH ston DL gia na ginei to perasma
+	    
+	    CALL ONE_DIGIT	; Kaloume tin One_digit 
+
+	    MOV CL,4	; Bazo ston CL 4 gia na exo toses epanalipseis
+
+	    SHR BL,CL	; Metatopizo Deksia ton BL tosa bit osa exei o CL
+	    MOV DL,BL	; Metaferoume ton deftero hex arithmo apo ton BL ston DL gia na ginei to perasma 
+
+	    CALL ONE_DIGIT	; Kaloume tin One_digit
+ 
+        MOV BL,CH	; Eixa valei ston CH to periexomeno tou BL kai twra to girnaw pisw gia na sinexisw
+
+	    MOV BH,0	; Mizenizo ton BH kai etsi ksero oti o BX exei ayto pou eixe o BL
+	    MOV CL,4	; Bazo ston CL 4 gia na exo toses epanalipseis
+
+	    SHL BX,CL	; Metatopizo aristera ton BX tosa bit osa exei o CL
+	    MOV DL,BH	; Metaferoume ton proto hex arithmo apo ton BH ston DL gia na ginei to perasma 
+
+	    CALL ONE_DIGIT	; Kaloume tin One_digit 
+
+	    MOV CL,4	; Bazo ston CL 4 gia na exo toses epanalipseis
+
+	    SHR BL,CL	; Metatopizo Deksia ton BL tosa bit osa exei o CL
+	    MOV DL,BL	; Metaferoume ton deftero hex arithmo apo ton BL ston DL gia na ginei to perasma 
+
+	    CALL ONE_DIGIT	; Kaloume tin One_digit
+        
+        MOV DL, 104
+        MOV AH,02H	; Emfanizoyme stin othoni to h
+	    INT 21H 
+        
+        ; OI 2 EPOMENES ENTOLES TERMATIZOYN TO PROGRAMMA KAI EPISTREFOYN STO LEITOYRGIKO
+        MOV AH,4CH
+        INT 21H
+        
+MAIN ENDP
+
+IPOPR PROC NEAR	;ypoprogramma
+        MOV AL, BL
+        MUL AL
+        MOV DX, AX
+        
+        MOV AL, BH
+        MUL AL
+        MOV BX, AX 
+        
+        ADD BX, DX		        
+        RET
+IPOPR ENDP
+
+ONE_DIGIT PROC NEAR
+	
+	CMP DL,9	; Sygkrinoume to DL me to 9 gia na ksexoriso an o DL exei arithmo 0-9 H metaksi 10-15
+	JA GRAMMA	; An o DL einai metaksi 10-15 phgaine stin etiketa "Gramma" gia na emfanistei apo A-F
+
+	ADD DL,48	; Metatrepoume ton arithmo poy exei o DL se xaraktira poy einai antistoixos se ASCII
+	JMP NEXT	; Phgainoyme stin etiketa "Next" giati i epomeni grammi anaferetai gia arithmoys 10-15
+
+GRAMMA:	ADD DL, 'A'-10	; Metatrepoume ton aritho pou einai 10-15 sto antistoixo gramma A-F prosthetontas 55
+
+NEXT:	MOV AH,02H	; Emfanizoyme stin othoni to periexomeno tou DL
+	INT 21H 
+
+TELOS:	RET		; Epistrefo stin thesi apo opou klithike h yporoutina
+
+ONE_DIGIT ENDP
+
+KODIKAS ENDS
+
+DATA SEGMENT  
+     
+    BUFFER DB 2 DUP(0) ; Dilosi enos pinaka me onoma Buffer 2 theseon typou Byte
+    PROTROPI DB 10,13,'Eisagete kefalaio gramma:  $'
+    PROTROPI1 DB 10,13,'Den eisagate kefalaio gramma!$'	
+DATA ENDS 
+
+END ARXI

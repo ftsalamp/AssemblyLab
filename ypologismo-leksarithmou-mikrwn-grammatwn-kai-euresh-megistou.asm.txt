@@ -1,0 +1,123 @@
+TITLE ASKISI4
+KODIKAS SEGMENT PUBLIC
+ASSUME CS:KODIKAS, DS:DEDOMENA, SS:SOROS
+    KYRIO PROC NEAR
+                    ; OI 2 PARAKATO ENTOLES APOKATHISTOYN THN TIMH TOY DS.
+	    MOV AX,DEDOMENA 
+	    MOV DS,AX
+	   
+	   LEA DX,PROTROPI
+	   MOV AH,9
+	   INT 21H
+	   
+	   MOV SI,0
+	   
+	    
+B2:     MOV AH,01H  ; Eisagoume xarakthra apo to plhktrologio me parallhlh emfanish
+	    INT 21H		; H ASCII timh tou xarakthra apothikeuetai ston AL
+	    
+	    CMP AL,'#'
+	    JE YPOL1
+	    
+	    CMP AL,'a'
+	    JB B2
+	    
+	    CMP AL,'z'
+	    JA B2      
+	    
+	    INC SI
+	    MOV BUFFER[SI],AL
+	    
+	    CMP SI,80
+	    JB B2   ;oso einai katw apo 80 pane sto B2
+	    
+YPOL1:       
+        MOV CX,SI
+        MOV SI,0
+        MOV BX,0
+        
+A1:     ADD BL,BUFFER[SI]
+        INC SI
+        LOOP A1     	    
+	    
+	    ;MOV NUM1,BL   
+
+        
+        
+        
+        LEA DX,PROTROPI
+	    MOV AH,9
+	    INT 21H
+        
+
+	   MOV SI,0	    
+B3:     MOV AH,01H  ; Eisagoume xarakthra apo to plhktrologio me parallhlh emfanish
+	    INT 21H		; H ASCII timh tou xarakthra apothikeuetai ston AL
+	    
+	    CMP AL,'#'
+	    JE YPOL2
+	    
+	    CMP AL,'a'
+	    JB B3
+	    
+	    CMP AL,'z'
+	    JA B3      
+	    
+	    INC SI
+	    MOV BUFFER[SI],AL
+	    
+	    CMP SI,80
+	    JB B3   ;oso einai katw apo 80 pane sto B2
+
+YPOL2:  
+        MOV DX,0     
+        MOV DH,0
+        MOV CX,SI
+        MOV SI,0
+        
+A2:     ADD DH,BUFFER[SI]
+        INC SI
+        LOOP A2     	    
+	    
+	   ; MOV NUM2,BH
+	    
+	    
+	     
+
+CONTROL:CMP BX,DX
+        JB APOT2
+        
+        CMP BX,DX
+        JA APOT1
+        
+        LEA DX,ISA
+        MOV AH,9
+        INT 21H
+        JMP EXIT 
+
+APOT1:  LEA DX,MEGPRWTO
+        MOV AH,9
+        INT 21H
+        JMP EXIT
+      
+APOT2:  LEA DX,MEGDEUTERO
+        MOV AH,9
+        INT 21H   
+	       
+EXIT:	MOV AH,4CH	
+    	INT 21H  
+    KYRIO ENDP 	  
+  
+KODIKAS ENDS
+
+DEDOMENA SEGMENT
+	BUFFER DB 80 DUP(0) ; Dilosi enos pinaka me onoma Buffer 20 theseon typou Byte
+    PROTROPI DB 10,13, 'Eisagete keimeno:  $';
+	MEGPRWTO DB 10,13, 'H PRWTH LEKSH ME MIKRA GRAMMATA POU EISAGATE EXEI MEGALUTERO LEKSARITHMO$'
+	MEGDEUTERO DB 10,13, 'H DEUTERH LEKSH ME MIKRA GRAMMATA POU EISAGATE EXEI MEGALUTERO LEKSARITHMO$'  
+	ISA DB 10,13,'EINAI ISA$'
+	NUM1 DB 0
+	NUM2 DB 0 						
+DEDOMENA ENDS
+
+	END KYRIO

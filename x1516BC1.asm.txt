@@ -1,0 +1,94 @@
+TITLE ASK2
+ASSUME CS:KODIKAS,DS:DATA
+KODIKAS SEGMENT
+MAIN PROC NEAR			           
+ARXI:	MOV AX,DATA
+     	MOV DS,AX
+        
+        
+        CALL IPOPR
+        
+        MOV BL,AL
+	    
+        CALL IPOPR
+        
+        MOV BH,AL
+        
+        MOV AH,0
+        MOV DL,2
+        DIV DL
+        MOV CH, AH
+        
+        MOV AH,0
+        MOV AL,BL
+        DIV DL
+        MOV CL,AH
+        
+        CMP CL,0
+        JE PRWTOSART
+        
+PRWTOSPER:
+        CMP CH,0
+        JNE BOTHPER
+        
+PRWTOSPERDEUTEROSART:        
+        LEA DX,MESSMIKR
+        MOV AH,9 	    
+        INT 21H
+        
+        CMP         
+	    
+        ; OI 2 EPOMENES ENTOLES TERMATIZOYN TO PROGRAMMA KAI EPISTREFOYN STO LEITOYRGIKO
+        MOV AH,4CH
+        INT 21H
+        
+MAIN ENDP
+
+IPOPR PROC NEAR	;ypoprogramma
+        LEA DX,PROTROPI  
+        MOV AH,9 	    
+        INT 21H
+        
+E1:     MOV AH,08h      
+        INT 21h 
+        
+        CMP AL,'0'
+        JB LATHOS
+        
+        CMP AL,'9'
+        JA LATHOS
+        
+        MOV DL,AL	    ; METAFERO STO DL TO XARAKTIRA POY EXOYME EISAGEI
+	    MOV AH,2	    ; METAFEROYME STON AH TO 2 GIA NA MPOROYME NA EMFANISOYME TO PERIEXOMENO TOY DL
+	    INT 21H
+	    
+	    SUB AL,48
+	    
+	    RET
+      
+LATHOS: LEA DX,LathosEis  
+        MOV AH,9 	    
+        INT 21H
+        
+        MOV DL,07H
+        MOV AH,02H
+        INT 21H 
+        JMP E1
+        		        
+        RET
+IPOPR ENDP
+
+
+
+KODIKAS ENDS
+
+DATA SEGMENT  
+     
+    BUFFER DB 2 DUP(0) ; Dilosi enos pinaka me onoma Buffer 2 theseon typou Byte
+    PROTROPI DB 10,13,'Eisagete noumero:  $'
+    LathosEis DB 10,13,'Den eisagate noumero!$'
+    MESSMIKR DB 10,13,'Mikroteros einai o: $'
+    MESSMEG DB 10,13,'Megaliteros einai o: $'	
+DATA ENDS 
+
+END ARXI

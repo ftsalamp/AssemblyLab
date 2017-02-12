@@ -1,0 +1,162 @@
+TITLE ASK2
+ASSUME CS:KODIKAS,DS:DATA
+KODIKAS SEGMENT
+MAIN PROC NEAR			           
+ARXI:	MOV AX,DATA
+     	MOV DS,AX
+        
+Start:        
+        CALL IPOPR
+        
+        MOV AH,0
+        MOV BH,0
+        MOV CL,2
+        SHL AL,CL
+        
+        MOV BL,AL
+        
+	    ;MOV DL,10
+	    ;MOV AH,0
+	    ;MUL DL
+	    ;MUL DL
+	    ;MOV BX,AX
+	    
+        CALL IPOPR
+        
+        ADD BL,AL
+        SHL BL,1
+        ;MOV AH,0
+        ;MUL DL
+        ;MOV CH,AL
+        
+        CALL IPOPR
+        ADD BL,AL
+        ;ADD BX,CH
+        CMP BH,0
+        JA Start
+        
+        CALL XAR
+        
+	    
+        ; OI 2 EPOMENES ENTOLES TERMATIZOYN TO PROGRAMMA KAI EPISTREFOYN STO LEITOYRGIKO
+        MOV AH,4CH
+        INT 21H
+        
+MAIN ENDP
+
+IPOPR PROC NEAR	;ypoprogramma
+        LEA DX,PROTROPI  
+        MOV AH,9 	    
+        INT 21H
+        
+E1:     MOV AH,08h      
+        INT 21h 
+        
+        CMP AL,'0'
+        JB LATHOS
+        
+        CMP AL,'9'
+        JA LATHOS
+        
+        MOV DL,AL	    ; METAFERO STO DL TO XARAKTIRA POY EXOYME EISAGEI
+	    MOV AH,2	    ; METAFEROYME STON AH TO 2 GIA NA MPOROYME NA EMFANISOYME TO PERIEXOMENO TOY DL
+	    INT 21H
+	    
+	    SUB AL,48
+	    
+	    RET
+      
+LATHOS: LEA DX,LathosEis  
+        MOV AH,9 	    
+        INT 21H
+        
+        MOV DL,07H  ;ixos
+        MOV AH,02H
+        INT 21H 
+        JMP E1
+        		        
+        RET
+IPOPR ENDP
+
+XAR PROC NEAR	;ypoprogramma
+ 
+        
+        CMP DL, 32
+        JB OTHER
+                
+        
+	    MOV AH,2	    ; METAFEROYME STON AH TO 2 GIA NA MPOROYME NA EMFANISOYME TO PERIEXOMENO TOY DL
+	    INT 21H
+	    
+	    CMP DL, 48
+        JB SIMVOLO
+        
+        CMP DL, 58
+        JB ARITHMOS
+        
+        CMP DL, 65
+        JB SIMVOLO
+        
+        CMP DL, 92
+        JB KEFALAIO
+        
+        CMP DL, 97
+        JB SIMVOLO
+        
+        CMP DL, 123
+        JB MIKRO
+        
+        CMP DL, 128
+        JB SIMVOLO
+	    
+	    LEA DX,REGIONALS  
+        MOV AH,9 	    
+        INT 21H
+	    JMP END
+        
+SIMVOLO:LEA DX,SIMVOLOS  
+        MOV AH,9 	    
+        INT 21H
+	    JMP END
+	    
+ARITHMOS:LEA DX,ARITHMOSS  
+        MOV AH,9 	    
+        INT 21H
+	    JMP END
+	    
+	    
+MIKRO:	LEA DX,MIKROS  
+        MOV AH,9 	    
+        INT 21H
+	    JMP END
+	    
+KEFALAIO:LEA DX,KEFALAIOS  
+        MOV AH,9 	    
+        INT 21H
+	    JMP END	        	    
+	            
+OTHER:  LEA DX,MIEKTIPWSIMOSS  
+        MOV AH,9 	    
+        INT 21H
+        
+      
+END: 			        
+        RET
+XAR ENDP
+
+KODIKAS ENDS
+
+DATA SEGMENT  
+     
+    BUFFER DB 2 DUP(0) ; Dilosi enos pinaka me onoma Buffer 2 theseon typou Byte
+    PROTROPI DB 10,13,'Eisagete noumero:  $'
+    LathosEis DB 10,13,'Den eisagate noumero!$'
+    ARITHMOSS DB 10,13,'Einai arithmos$'
+    KEFALAIOS DB 10,13,'Einai kefalaio$'
+    MIKROS DB 10,13,'Einai mikro$'
+    SIMVOLOS DB 10,13,'Einai simvolo$'
+    MIEKTIPWSIMOSS DB 10,13,'Einai mi ektipwsimos$'
+    REGIONALS DB 10,13,'Einai regional$'	
+DATA ENDS 
+
+END ARXI

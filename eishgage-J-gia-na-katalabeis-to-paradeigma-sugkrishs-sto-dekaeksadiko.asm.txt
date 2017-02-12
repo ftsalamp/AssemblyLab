@@ -1,0 +1,48 @@
+                                  TITLE ASK2
+ASSUME CS:KODIKAS,DS:DATA
+KODIKAS SEGMENT
+			           
+ARXI:	MOV AX,DATA
+     	MOV DS,AX
+                MOV SI,0       
+    
+        LEA DX,PROTROPI  
+        MOV AH,9 	    
+        INT 21H 	    
+   
+v1:     MOV AH,01h      
+        INT 21h 
+        CMP AL,4Ah
+        JE NOTHING
+        
+        
+        EXIT:     		
+              
+        MOV AH,4CH
+        INT 21H
+        
+NOTHING:
+        LEA DX,NOINPUT
+         MOV AH,9 	    
+        INT 21H 
+        MOV BL,N
+        LEA DL,BL
+        ADD DL,30h
+        MOV AH,2
+        INT 21H
+        
+         MOV AH,4CH
+        INT 21H
+        
+KODIKAS ENDS
+
+DATA SEGMENT 
+    N DB 5  
+    BUFFER DB 40 DUP(0) ; Dilosi enos pinaka me onoma Buffer 40 theseon typou Byte
+    PROTROPI DB 'Eisagete keimeno:  $';
+	MES DB 10,13,10,13,'H metatropi einai: $' ; To minima pou tha emfanistei
+	NOINPUT DB 10,13,'Den eisagate kanena charaktira. Telos programmatos$';		
+   
+DATA ENDS 
+
+END ARXI	

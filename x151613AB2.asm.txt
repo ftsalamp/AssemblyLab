@@ -1,0 +1,89 @@
+TITLE ASK2
+ASSUME CS:KODIKAS,DS:DATA
+KODIKAS SEGMENT
+MAIN PROC NEAR			           
+ARXI:	MOV AX,DATA
+     	MOV DS,AX
+        
+        MOV SI,0        
+        
+E1:     LEA DX,PROTROPI  
+        MOV AH,9 	    
+        INT 21H 
+        
+        MOV AH,08h      
+        INT 21h 
+        
+        CMP AL,'A'
+        JB E1
+        
+        CMP AL,'z'
+        JA E1
+        
+        CMP AL,'Z'
+        JBE E2
+        
+        CMP AL, 'a'
+        JAE E2
+        
+        JMP E1
+        
+E2:     MOV BUFFER[SI], AL              
+        INC SI     
+             
+        MOV AH,08h      
+        INT 21h
+        
+        CMP BUFFER[SI-1],'Z' 
+        JB FIRSTCAPITAL
+        
+FIRSTSMALL:
+        CMP AL,'Z'
+        JA  E1           
+        
+        JMP NEXT
+        
+FIRSTCAPITAL:
+        CMP AL, 'a'
+        JB E1
+        
+NEXT:           
+       MOV BUFFER[SI], AL
+                
+                
+        
+EMFANISI:
+        MOV CX,SI
+        MOV SI,0
+F1:        
+        MOV DL, BUFFER[SI]
+        MOV AH,2 	    
+        INT 21H
+        
+        INC SI
+        CMP SI,CX
+        JBE F1        
+
+               
+        
+
+        
+TELOS:  ; OI 2 EPOMENES ENTOLES TERMATIZOYN TO PROGRAMMA KAI EPISTREFOYN STO LEITOYRGIKO
+        MOV AH,4CH
+        INT 21H
+        
+MAIN ENDP
+
+
+
+
+KODIKAS ENDS
+
+DATA SEGMENT  
+    BUFFER DB 2 DUP(0)
+    PROTROPI DB 10,13,'Eisagete 2 xaraktires to latinikou alfavitou (ena kefalaio ena mikro): $'
+    KAMIAEISODOS DB 10,13,'Den eisagate kananen xaraktira:  $' 
+    PROTROPI1I DB 10,13,'Megaliteri einai i 1i leksi:  $'	
+DATA ENDS 
+
+END ARXI

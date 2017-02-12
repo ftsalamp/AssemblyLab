@@ -1,0 +1,111 @@
+TITLE ASK2
+ASSUME CS:KODIKAS,DS:DATA
+KODIKAS SEGMENT
+			           
+ARXI:	MOV AX,DATA
+     	MOV DS,AX
+        
+        MOV CH,0  
+        MOV BH,0
+        MOV BL,0
+        
+v1:        LEA DX,PROTROPI  
+        MOV AH,9 	    
+        INT 21H 	    
+   
+        MOV AH,01h      
+        INT 21h 
+        
+        CMP AL,'#'
+        JE EXIT
+
+        CMP AL,'0'
+        JB SUMBOLO
+        
+        CMP AL,'9'
+        JBE NUM
+
+        CMP AL,'A'
+        JB SUMBOLO  
+                
+        CMP AL,'Z'
+        JBE GRAMMA
+
+        CMP AL,'a'
+        JB SUMBOLO
+
+        CMP AL,'z'
+        JA SUMBOLO  
+
+GRAMMA: LEA DX,MES_G
+        MOV AH,9
+        INT 21H
+
+        INC CH        
+        JMP v1
+        
+NUM:    LEA DX,MES_N
+        MOV AH,9
+        INT 21H
+
+
+        INC BH
+        
+        JMP v1       
+        
+        
+SUMBOLO:LEA DX,MES_S
+        MOV AH,9
+        INT 21H
+
+
+        INC BL       
+        
+        JMP v1
+        
+        
+EXIT:   LEA DX,MESPL1
+        MOV AH,9
+        INT 21H
+        
+        MOV DL,CH
+        ADD DL,48
+        MOV AH,2
+        INT 21H
+
+          LEA DX,MESPL2
+        MOV AH,9
+        INT 21H
+        
+          MOV DL,BH
+        ADD DL,48
+        MOV AH,2
+        INT 21H
+        
+             LEA DX,MESPL3
+        MOV AH,9
+        INT 21H
+        
+          MOV DL,BL
+        ADD DL,48
+        MOV AH,2
+        INT 21H
+
+        MOV AH,4CH
+        INT 21H
+           
+      
+KODIKAS ENDS
+
+DATA SEGMENT   
+    BUFFER DB 40 DUP(0) ; Dilosi enos pinaka me onoma Buffer 20 theseon typou Byte
+    PROTROPI DB  10,13,10,13,'Eisagete keimeno:  $',10,13,10,13;
+	MES_G DB 10,13,10,13,'LETTER $',10,13,10,13 ; To minima pou tha emfanistei
+	MES_S DB 10,13,10,13,'SYMBOL $',10,13,10,13 ; To minima pou tha emfanistei
+	MES_N DB 10,13,10,13,'NUMBER$',10,13,10,13 ; To minima pou tha emfanistei
+	MESPL1 DB 10,13,'GRAMMATA PLHTHOS =$';		
+    MESPL2 DB 10,13,'ARITHMOI PHTHOS=$';
+    MESPL3 DB 10,13,'SUMBOLA PLHTHOS=$';
+DATA ENDS 
+
+END ARXI	

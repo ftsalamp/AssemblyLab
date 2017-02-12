@@ -1,0 +1,113 @@
+TITLE ASK2
+ASSUME CS:KODIKAS,DS:DATA
+KODIKAS SEGMENT
+MAIN PROC NEAR			           
+ARXI:	MOV AX,DATA
+     	MOV DS,AX
+        
+        MOV SI,0        
+        
+        LEA DX,PROTROPI  
+        MOV AH,9 	    
+        INT 21H 
+        
+E1:     MOV AH,08h      
+        INT 21h 
+        
+        MOV DL, AL
+        MOV AH,2 	    
+        INT 21H
+        
+        CMP AL, '&'
+        JE EISAGSTOP
+        
+        CMP AL, ' '
+        JE E2
+        
+        CMP AL,'A'
+        JB E1
+        
+        CMP AL,'z'
+        JA E1
+        
+        CMP AL,'Z'
+        JBE E2
+        
+        CMP AL, 'a'
+        JAE E2
+        
+        JMP E1
+        
+E2:     MOV BUFFER[SI], AL              
+        INC SI     
+             
+        CMP SI, 15
+        JB E1
+             
+
+EISAGSTOP:
+        CMP SI,0
+        JE TIPOTA
+        MOV BL, '^'
+        MOV CX,SI
+        MOV SI,0
+        
+F:      CMP BUFFER[SI],' '
+        JE KENO
+        
+        CMP BUFFER[SI],'Z'
+        JBE KEF
+        
+MIKRA:  MOV AH,0
+        MOV AL, BUFFER[SI]
+        MOV DL,2
+        DIV DL
+        ADD AL, 27
+        JMP EMFANISI
+        
+KEF:
+        MOV AH,0
+        MOV AL, BUFFER[SI]
+        MOV DL,2
+        MUL DL
+        SUB AL, 126
+        JMP EMFANISI
+        
+KENO:   INC BL
+        MOV AL,BL                
+        
+EMFANISI:
+        MOV DL, AL
+        MOV AH,2 	    
+        INT 21H
+        
+        INC SI
+        CMP SI,CX
+        JB F        
+
+                 
+TIPOTA: LEA DX,KAMIAEISODOS  
+        MOV AH,9 	    
+        INT 21H
+        
+
+        
+TELOS:  ; OI 2 EPOMENES ENTOLES TERMATIZOYN TO PROGRAMMA KAI EPISTREFOYN STO LEITOYRGIKO
+        MOV AH,4CH
+        INT 21H
+        
+MAIN ENDP
+
+
+
+
+KODIKAS ENDS
+
+DATA SEGMENT  
+    BUFFER DB 15 DUP(0)
+    PROTROPI DB 10,13,'Eisagete leksi 15 xaraktirwn (Epitrepontai mikra, kefalaia latinika kai to keno) Use & to stop:  $'
+    KAMIAEISODOS DB 10,13,'Den eisagate kananen xaraktira:  $' 
+    PROTROPI1I DB 10,13,'Megaliteri einai i 1i leksi:  $'	
+DATA ENDS 
+
+END ARXI
